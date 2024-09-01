@@ -40,18 +40,24 @@ extern "C" {
 
 				while (pThunk->u1.Function) {
 					PROC* ppFunc = (PROC*)&pThunk->u1.Function;
+					DWORD oldProtect;
 
 					if (*ppFunc == (PROC)GetProcAddress(GetModuleHandle(L"KERNEL32.dll"), "FindFirstFileA")) {
-						DWORD oldProtect;
 						VirtualProtect(ppFunc, sizeof(PROC), PAGE_EXECUTE_READWRITE, &oldProtect);
 						OriginalFFF = (FindFirstFileA_t)*ppFunc;
 						*ppFunc = (PROC)HookedFFF;
 						VirtualProtect(ppFunc, sizeof(PROC), oldProtect, &oldProtect);
+					} else if (*ppFunc == (PROC)GetProcAddress(GetModuleHandle(L"KERNEL32.dll"), "FindNextFileA")) {
+						VirtualProtect(ppFunc, sizeof(PROC), PAGE_EXECUTE_READWRITE, &oldProtect);
+						*ppFunc = (PROC)HookedFNF;
+						VirtualProtect(ppFunc, sizeof(PROC), oldProtect, &oldProtect);
+						break;
 					}
+					pThunk++;
 				}
+				break;
 			}
+			pImageimportDesc++;
 		}
-
 	}
-
 }
