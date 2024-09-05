@@ -1,5 +1,6 @@
-#include "hooking.h"
+#include "Hooking.h"
 #include <stdio.h>
+#include "pch.h"
 
 FindFirstFileA_t OriginalFFF = NULL;
 FindNextFileA_t OriginalFNF = NULL;
