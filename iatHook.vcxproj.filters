@@ -35,5 +35,8 @@
     <ClCompile Include="Hooking.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DLLInjector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
